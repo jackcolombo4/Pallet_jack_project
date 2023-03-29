@@ -1,0 +1,11 @@
+# Define the goal
+uint32 sides #number of the sides
+uint32 length #length of each side
+---
+# Define the result
+bool succesful            
+---
+# Define a feedback message
+uint32 drawn_sides #the number of sides already drawn
+
+

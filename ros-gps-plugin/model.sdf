@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<sdf version='1.5'>
+    <model name="gps">
+        <static>true</static>
+        <link name="link">
+        <visual name='box'>
+            <geometry>
+                <box>
+                    <size>.05 .05 .05</size>
+                </box>
+            </geometry>
+        </visual>
+        <sensor type="gps" name="mGps">
+            <gps>
+                <position_sensing>
+                    <horizontal>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.5</stddev>
+                        </noise>
+                    </horizontal>
+                    <vertical>
+                        <noise  type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>5.0</stddev>
+                        </noise>
+                    </vertical>
+                </position_sensing>
+            </gps>
+            <always_on>1</always_on>
+            <update_rate>1</update_rate>
+            <plugin name="faulty_behavior" filename="libFaultyGPSPlugin.so">
+		      <lossProbability>0.0001</lossProbability>
+		      <multiPathProbability>0.0001</multiPathProbability>
+		      <maxLongTranslation>0.0001</maxLongTranslation>
+		      <maxLatTranslation>0.0001</maxLatTranslation>
+		</plugin>
+        </sensor>
+    </link>
+  </model>
+</sdf>

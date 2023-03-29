@@ -1,0 +1,584 @@
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+ROS Navigation
+\begin_inset Newline newline
+\end_inset
+
+ROBOTICS PROJECT AA 2016/2017
+\end_layout
+
+\begin_layout Author
+Emiliano Gagliardi 
+\begin_inset Newline newline
+\end_inset
+
+Emanuele Ghelfi
+\end_layout
+
+\begin_layout Section
+Package structure
+\end_layout
+
+\begin_layout Standard
+The directory willy3_2dnav is the main directory and contains the following
+ folders:
+\end_layout
+
+\begin_layout Itemize
+launch: contains the launch files.
+\end_layout
+
+\begin_layout Itemize
+nav_stack_conf: contains the configuration files for the navigation stack.
+\end_layout
+
+\begin_layout Itemize
+map: contains the map generated with gmapping.
+ The generated maps are inside the folder 
+\begin_inset Quotes eld
+\end_inset
+
+gen
+\begin_inset Quotes erd
+\end_inset
+
+ (generated).
+ The perfect map is inside the map folder.
+\end_layout
+
+\begin_layout Itemize
+robot_conf/models contains the sdf file for the description of the robot
+ and the sensor.
+\end_layout
+
+\begin_layout Subsection
+Launch files
+\end_layout
+
+\begin_layout Standard
+Inside the folder launch there are two launch files: 
+\end_layout
+
+\begin_layout Itemize
+launch_tf.launch is the launch file that spawns the willy3 model and publishes
+ the transformation between the laser sensor and the base link using the
+ node static_transform_publisher.
+\end_layout
+
+\begin_layout Itemize
+willy3_nav.launch is the launch file required to configure the move base
+ by assigning the path of the configuration files and remapping the topic
+ scan to laser_scan.
+ This launch file includes also the amcl_diff.launch for the navigation and
+ the map server.
+\end_layout
+
+\begin_layout Subsection
+Navigation stack configuration
+\end_layout
+
+\begin_layout Standard
+The file inside nav_stack_conf directory are used by the move_base node.
+ These files are taken by the ros tutorial and adjusted for the 
+\begin_inset Quotes eld
+\end_inset
+
+willy3
+\begin_inset Quotes erd
+\end_inset
+
+ robot.
+ The robot is assumed circular with radius of 0.4 since it hasn't a particular
+ shape and the obstacles are inflated by 0.4.
+ The robot is not holonomic since it's a differential drive.
+\end_layout
+
+\begin_layout Section
+Installation
+\end_layout
+
+\begin_layout Standard
+The directory willy3_2dnav must be linked inside the catkin_ws workspace
+ and the robot_conf/models must be linked inside the .gazebo/models folder:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\footnotesize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+cd ~/catkin_ws/src
+\end_layout
+
+\begin_layout Plain Layout
+
+ln -s path_to_ros-navigation-folder/willy3_2dnav
+\end_layout
+
+\begin_layout Plain Layout
+
+cd ..
+\end_layout
+
+\begin_layout Plain Layout
+
+catkin_make
+\end_layout
+
+\begin_layout Plain Layout
+
+cd ~/.gazebo/models
+\end_layout
+
+\begin_layout Plain Layout
+
+ln -s path_to_ros-navigation-folder/willy3_2dnav/robot_conf/models/willy3
+\end_layout
+
+\begin_layout Plain Layout
+
+ln -s path_to_ros-navigation-folder/willy3_2dnav/robot_conf/models/hokuyo_ros
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Mapping
+\end_layout
+
+\begin_layout Standard
+The world willowgarage is large and complicated.
+ In order to map it we've used two different approaches.
+\end_layout
+
+\begin_layout Standard
+In the first approach we've driven the robot around the world using rviz
+ to visualize the creation of the map.
+\end_layout
+
+\begin_layout Standard
+Unfortunately the resulting map has a shifted part but with more time available
+ the resulting map should be better.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Screen Shot 2017-08-04 at 15.20.27.png
+	lyxscale 10
+	width 70page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+map/gen/v2/willow
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The second map created with this approach is a little better than the first:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Screenshot from 2017-08-06 12-09-18.png
+	lyxscale 10
+	width 50page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+map/gen/v3/willow_map
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This map has been postprocessed with gimp.
+\end_layout
+
+\begin_layout Standard
+The commands in order to run the mapping process are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\footnotesize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+roslaunch willy3_2dnav launch_tf.launch
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun gmapping slam_gmapping scan:=laser_scan
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun joy joy_node # for the use of the joystick
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun teleop_twist_joy teleop_node
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun rviz rviz # map visualization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After having obtained a good map:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\footnotesize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rosrun map_server map_saver -f <map_name> 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The other approach is using the navigation stack coupled with gmapping for
+ driving the robot in an autonomous way.
+ The robot can only use the local planner since the map is not completed.
+ Unfortunately this process is slower than the other and we haven't obtained
+ a complete map (since it requires a lot of time).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Screen Shot 2017-08-04 at 15.20.37.png
+	lyxscale 10
+	width 50page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+map/gen/v1/mMapWillow
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The commands are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\footnotesize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+roslaunch willy3_2dnav launch_tf.launch
+\end_layout
+
+\begin_layout Plain Layout
+
+roslaunch willy3_2dnav willy3_nav.launch
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun gmapping slam_gmapping scan:=laser_scan
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun rviz rviz # map visualization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With this maps the robot has problems with localization.
+ It's better to give the robot short distance goals to help him localize
+ better.
+ It has also some problems with little openings.
+\end_layout
+
+\begin_layout Standard
+In order to change the map used by the navigation stack change the following
+ lines of the file willy3_nav.launch inside launch folder:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<node name="map_server" pkg="map_server" type="map_server"
+\end_layout
+
+\begin_layout Plain Layout
+
+	args="$(find willy3_2dnav)/map/gen/v3/willow_map.yaml"/>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With the path of the yaml of the map:
+\end_layout
+
+\begin_layout Itemize
+args="$(find willy3_2dnav)/map/gen/v2/willow.yaml" for the second version
+ of the map.
+\end_layout
+
+\begin_layout Itemize
+args="$(find willy3_2dnav)/map/gen/v1/mMapWillow.yaml" for the first version
+ of the map.
+\end_layout
+
+\begin_layout Section
+Navigation
+\end_layout
+
+\begin_layout Standard
+For the navigation part the commands are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\footnotesize\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+roslaunch willy3_2dnav launch_tf.launch
+\end_layout
+
+\begin_layout Plain Layout
+
+roslaunch willy3_2dnav willy3_nav.launch
+\end_layout
+
+\begin_layout Plain Layout
+
+rosrun rviz rviz # map visualization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using rviz it's possible to open the rviz configuration file inside the
+ main folder that contains the topics already configured.
+\end_layout
+
+\begin_layout Standard
+By sending goals using the rviz graphical interface the robot should move
+ to the desired location.
+\end_layout
+
+\begin_layout Section
+Reference
+\end_layout
+
+\begin_layout Itemize
+http://wiki.ros.org/slam_gmapping/Tutorials/MappingFromLoggedData
+\end_layout
+
+\begin_layout Itemize
+http://wiki.ros.org/navigation/Tutorials/RobotSetup
+\end_layout
+
+\begin_layout Itemize
+Github repository: https://github.com/EmilianoGagliardiEmanueleGhelfi/ros-navigat
+ion
+\end_layout
+
+\end_body
+\end_document

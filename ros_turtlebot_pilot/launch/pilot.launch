@@ -1,0 +1,43 @@
+<launch>
+      <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"/>
+      <node name="mux" pkg="ros_turtlebot_pilot" type="mux" output="screen"/>
+      <node name="joy_cmd" pkg="ros_turtlebot_pilot" type="joy_cmd" output="screen"/>
+      <node name="improved_controller" pkg="ros_turtlebot_pilot" type="improved_controller" output="screen">
+      <param name = "odom" value="improved_odom"/> <!--possible values: odom, improved_odom"-->
+      </node>
+      <!-- PID -->
+      <node name="PID_LinearController" pkg="pid" type="controller">
+            <param name="Kp" value="1" />
+            <param name="Ki" value="0.0" />
+            <param name="Kd" value="0.5" />
+            <param name="upper_limit" value="1" />
+            <param name="lower_limit" value="-10" />
+            <param name="windup_limit" value="10" />
+            <param name="diagnostic_period" value="0.25" />
+            <param name="max_loop_frequency" value="100.0" />
+            <param name="min_loop_frequency" value="100.0" />
+            <param name="setpoint_topic" value="linear_setpoint"/>
+            <param name="topic_from_plant" value="linear_state"/>
+            <param name="topic_from_controller" value="linear_control_effort"/>
+            <param name="pid_enable_topic" value="linear_pid_enable"/>
+      </node>
+      <node name="PID_AngularController" pkg="pid" type="controller">
+            <param name="Kp" value="1" />
+            <param name="Ki" value="0.0" />
+            <param name="Kd" value="0.5" />
+            <param name="upper_limit" value="1" />
+            <param name="lower_limit" value="-10" />
+            <param name="windup_limit" value="10" />
+            <param name="diagnostic_period" value="0.25" />
+            <param name="max_loop_frequency" value="100.0" />
+            <param name="min_loop_frequency" value="100.0" />
+            <param name="setpoint_topic" value="angular_setpoint"/>
+            <param name="topic_from_plant" value="angular_state"/>
+            <param name="topic_from_controller" value="angular_control_effort"/>
+            <param name="pid_enable_topic" value="angular_pid_enable"/>
+      </node>
+      <node name="improved_odometry" pkg="ros_turtlebot_pilot" type="improved_odometry" output="screen">
+            <param name="odom_method" value="runge-kutta"/><!--possible values: euler, runge-kutta, exact-->
+            <param name="data_num" value="1"/> <!--number of data read that are then averaged-->
+      </node>
+</launch>

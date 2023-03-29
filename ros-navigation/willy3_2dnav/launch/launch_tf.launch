@@ -1,0 +1,5 @@
+<launch>
+	<include file="$(find gazebo_ros)/launch/willowgarage_world.launch"/>
+	<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find willy3_2dnav)/robot_conf/models/willy3/model.sdf -sdf -z 0.01 -model willy3" respawn="false" output="screen" />
+   <node pkg="tf" type="static_transform_publisher" name="laser_scan_broadcaster" args="0.21 0 0.2525 0 0 0 1 base_link base_laser 100" />
+ </launch>

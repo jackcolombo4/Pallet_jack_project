@@ -1,0 +1,11 @@
+global_costmap:
+  global_frame: /map
+  robot_base_frame: base_link
+  update_frequency: 5.0
+  # it was true
+  static_map: true
+  # Added for slam 
+  #rolling_window: true
+  #width: 6.0
+  #height: 6.0
+  #resolution: 0.05

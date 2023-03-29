@@ -1,0 +1,234 @@
+
+<!-- SUMMARY! 
+<?xml version='1.0'?>
+<sdf version='1.4'>
+	<model name="pallet_jack">
+		<static>false</static>
+		<!-- //CHASSIS MAIN CENTRAL LINK 
+		<link name='chassis'></link>
+		<!-- //WHEELS 
+		<link name='steer_right_wheel'></link>
+		<link name='steer_left_wheel'></link>
+		<link name='load_right_wheel'></link>
+		<link name='load_left_wheel'></link>
+		<!-- //lift link
+		<link name='lift'></link>
+		<!-- //SENSOR 
+		<link name="camera_link"></link>
+		<!-- //link for adjust number of DOF (see later) 
+		<link name="special_link"></link>
+		<!-- //JOINTS 
+		<joint type="revolute" name="chassis_joint"></joint> <!-- //1 DOF 
+		<joint type="revolute" name="chassis_joint"></joint> 
+		<joint type="revolute" name="chassis_special_joint"></joint>
+		<joint type="prismatic" name="lift_joint"></joint> <!-- //1 DOF 
+		<joint type="revolute" name="special_right_joint"></joint>
+		<joint type="revolute" name="special_left_joint"></joint>
+		<joint type="fixed" name="camera_joint"></joint> <!-- //0 DOF 
+		<plugin></plugin>
+	</model>
+</sdf>
+-->
+<sdf version='1.4'>
+	<model name="pallet_jack">
+		<static>false</static>
+		<!-- CHASSIS MAIN CENTRAL LINK --> 
+		<link name='fork'>
+			<pose>0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>100</mass>
+				<!-- +inertia+frame+pose-->
+			</inertial>
+			<collision name="fork_center_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+				</geometry>	
+			</collision>
+			<visual name="fork_center_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+			<collision name="fork_left_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</collision>
+			<visual name="fork_left_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+			<collision name="fork_right_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</collision>
+			<visual name="fork_right_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+			<collision name="fork_left_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</collision>
+			<visual name="fork_left_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+			
+			<collision name="frontpart1_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</collision>
+			<visual name="frontpart1_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+			<collision name="frontpart2_collision">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</collision>
+			<visual name="frontpart2_visual">
+				<pose>x y z 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>.q .w .e</size>
+					</box>
+			</visual>
+		</link>
+		
+		<link name="lift">
+			<pose></pose>
+			<inertial>
+				<mass>50</mass>
+			</inertial>
+			<collision name="internal_lift_collision"></collision>
+			<visual name="internal_lift_visual"></visual>
+			<collision name="right_lift_collision"></collision>
+			<visual name="right_lift_visual"></visual>
+			<collision name="left_lift_collision"></collision>
+			<visual name="left_lift_visual"></visual>
+			<sensor type="ray" name="head_hokuyo_sensor">
+			</sensor>
+		</link>
+
+<!-- 4 wheels -->
+		
+		<link name="steer_right_wheel">
+			<pose></pose>
+			<inertial></inertial>
+		</link>
+		
+		<link name="steer_left_wheel">
+			<pose></pose>
+			<inertial></inertial>
+		</link>
+		
+		<link name="load_right_wheel">
+			<pose></pose>
+			<inertial></inertial>
+		</link>
+		
+		<link name="load_left_wheel">
+			<pose></pose>
+			<inertial></inertial>
+		</link>
+
+<!-- camera -->		
+
+		<link name="camera_link">
+			<pose>.76 0 .295 0 0 0</pose>
+			<collision name="camera_collision">
+				<geometry>
+					<box>
+						<size>0.05 0.05 0.05</size>
+					</box>
+				</geometry>
+			</collision>
+			<visual name="camera_visual">
+				<geometry>
+					<box>
+						<size>0.05 0.05 0.05</size>
+					</box>
+				</geometry>
+			</visual>
+			<sensor type="camera" name="camera1">
+				<update_rate>30.0</update_rate>
+				<camera name="head">
+					<horizontal_fov>1.3962634</horizontal_fov>
+					<image>
+						<width>800</width>
+						<height>800</height>
+						<format>R8G8B8</format>
+					</image>
+					<clip>
+						<near>0.02</near>
+						<far>300</far>
+					</clip>
+				</camera>
+		        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+		          <alwaysOn>true</alwaysOn>
+		          <updateRate>0.0</updateRate>
+		          <cameraName>pallet_jack/camera</cameraName>
+		          <imageTopicName>image_raw</imageTopicName>
+		          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+		          <frameName>camera_link</frameName>
+		          <hackBaseline>0.07</hackBaseline>
+		          <distortionK1>0.0</distortionK1>
+		          <distortionK2>0.0</distortionK2>
+		          <distortionK3>0.0</distortionK3>
+		          <distortionT1>0.0</distortionT1>
+		          <distortionT2>0.0</distortionT2>
+		        </plugin>
+			</sensor>
+		</link>
+		
+	</model>
+</sdf>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

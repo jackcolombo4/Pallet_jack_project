@@ -1,0 +1,5 @@
+<launch>
+      <node name="client" pkg="turtlesim_actionlib" type="client" output="screen"/>
+      <node name="server" pkg="turtlesim_actionlib" type="server" output="screen"/>
+      <node name="turtlesim_node" pkg="turtlesim" type="turtlesim_node"/>
+</launch>

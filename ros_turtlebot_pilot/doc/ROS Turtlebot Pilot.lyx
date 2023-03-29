@@ -1,0 +1,889 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 15page%
+\topmargin 10pheight%
+\rightmargin 15page%
+\bottommargin 10pheight%
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+ROS Turtlebot Pilot
+\end_layout
+
+\begin_layout Title
+Robotics Project AA 2016/2017
+\end_layout
+
+\begin_layout Author
+Emanuele Ghelfi
+\begin_inset Newline newline
+\end_inset
+
+Emiliano Gagliardi
+\end_layout
+
+\begin_layout Section
+Package structure
+\end_layout
+
+\begin_layout Standard
+The ros-turtlebot-pilot package contains:
+\end_layout
+
+\begin_layout Itemize
+The src folder containing the following file:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+controller.cpp: this is the first version of the controller that drives the
+ turtlebot to the goal.
+\end_layout
+
+\begin_layout Itemize
+improved_controller.cpp: this is the second and improved version of the controlle
+r that drives the turtlebot to the goal.
+\end_layout
+
+\begin_layout Itemize
+joypad_simulator.cpp: a node that receive input from keyboard and publish
+ a sensor_msgs/Joy message on the topic used by the joy_node node.
+\end_layout
+
+\begin_layout Itemize
+joy_cmd.cpp: a node that receives messages from the topic 
+\begin_inset Quotes eld
+\end_inset
+
+joy
+\begin_inset Quotes erd
+\end_inset
+
+ and publishes them on the 
+\begin_inset Quotes eld
+\end_inset
+
+cmd_joy
+\begin_inset Quotes erd
+\end_inset
+
+ topic.
+\end_layout
+
+\begin_layout Itemize
+goal_reader.cpp: a node that receives the goal from the keyboard and publishes
+ it on the topic 
+\begin_inset Quotes eld
+\end_inset
+
+goal
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+mux.cpp: a node that manages the switch between automatic mode and pilot
+ mode.
+\end_layout
+
+\begin_layout Itemize
+improved_odometry.cpp: a simple nodes that implements various types of odometry
+ using simple integration (Euler method), Runge-Kutta integration and Exact
+ integration.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+The launch folder containing the pilot.launch file for starting the simulation
+ with the improved controller and the pilot_old.launch for starting the simulatio
+n with the old controller.
+\end_layout
+
+\begin_layout Itemize
+The srv folder containing the SetMode.srv file for the specification of the
+ request of the server and the GetMode.srv.
+\end_layout
+
+\begin_layout Section
+Node Description
+\end_layout
+
+\begin_layout Subsection*
+Joypad Simulator
+\end_layout
+
+\begin_layout Standard
+The joypad simulator simulates a joypad and provides support for the two
+ main axes and for different buttons.
+\end_layout
+
+\begin_layout Standard
+With the arrows it's only possible to give one velocity (linear or angular)
+ at a time.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to give two velocities at a time it's possible to use the buttons
+ written in the instruction in the terminal.
+\end_layout
+
+\begin_layout Standard
+The node initializes the terminal with some utility functions of ncurses
+ in order to get the raw input from the keyboard without waiting the enter
+ command.
+\end_layout
+
+\begin_layout Standard
+When receiving a button it waits before sending it as message, in this way
+ it can send multiple buttons in the same message.
+\end_layout
+
+\begin_layout Subsection*
+Joy Cmd
+\end_layout
+
+\begin_layout Standard
+The joy cmd node receives messages from the topic joy and writes them to
+ the topic cmd_joy.
+\end_layout
+
+\begin_layout Standard
+It also implements some logic in order to give more smoothness to the drive.
+\end_layout
+
+\begin_layout Standard
+For the purpose of smoothness it increases the velocity contained in the
+ message to send by a little increment in the desired direction until the
+ maximum (or zero) velocity has been reached.
+\end_layout
+
+\begin_layout Standard
+The drive experience has improved a lot with this little 
+\begin_inset Quotes eld
+\end_inset
+
+trick
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Controller
+\end_layout
+
+\begin_layout Standard
+The controller node implements the control logic needed to reach the goal.
+ This node subscribes to the topic 
+\begin_inset Quotes eld
+\end_inset
+
+goal
+\begin_inset Quotes erd
+\end_inset
+
+ in order to get the position of the goal and to the topic 
+\begin_inset Quotes eld
+\end_inset
+
+odom
+\begin_inset Quotes erd
+\end_inset
+
+ specified in the launch file (improved_odom, or odom).
+ This nodes interacts also with the PID controller by using the correct
+ topics.
+ 
+\end_layout
+
+\begin_layout Standard
+When it receives a goal it changes state from IDLE to INITIAL ROTATION.
+ In this state the controller acts on the angular velocity until the robot
+ has reached the correct orientation with respect to the goal.
+ This is done by setting the orientation as setpoint in the topic of the
+ pid and received the control effort based on the PID parameters.
+\end_layout
+
+\begin_layout Standard
+When the orientation in near enough to the orientation of the goal the controlle
+r changes state to MOVING FORWARD.
+ In this state the controller acts on the linear velocity until the robot
+ is near enough the goal.
+ This is done by setting the desired position as setpoint in the topic of
+ the pid.
+\end_layout
+
+\begin_layout Standard
+When the robot is near enough to the goal the controller changes state to
+ FINAL ROTATION, this state is pretty similar to the INITIAL ROTATION state
+ but here the robot should reach the final orientation specified in the
+ goal.
+\end_layout
+
+\begin_layout Standard
+Using this method there can be problems if the goal is far from the robot.
+ If the robot starts moving forward with a small gap with respect to the
+ correct orientation it can happen that the direction has to be correct
+ during the navigation.
+ 
+\end_layout
+
+\begin_layout Standard
+This controller implements a 
+\begin_inset Quotes eld
+\end_inset
+
+lazy
+\begin_inset Quotes erd
+\end_inset
+
+ trajectory correction in the sense that it changes the trajectory when
+ it understand that the robot is going away from the goal.
+ This is done by monitoring the distance from the goal at each simulation
+ step.
+ When the distance starts to increase it means that the robot should change
+ trajectory and the controller changes state to INITIAL ROTATION to change
+ the direction.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/controller.png
+	width 30page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Example of trajectory of the turtlebot using the Controller node.
+ The red circle is the robot.
+ The trajectory is not smooth, the gap between the first direction and the
+ goal is due to a little imprecision in the initial rotation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Improved Controller
+\end_layout
+
+\begin_layout Standard
+This is the second version of the controller.
+ This is similar to the previous controller except that it controls the
+ two linear and angular velocities simultaneously in the MOVING FORWARD
+ phase.
+\end_layout
+
+\begin_layout Standard
+The INITIAL ROTATION and FINAL ROTATION are exactly equals to the state
+ of the previous controller.
+\end_layout
+
+\begin_layout Standard
+This controller implements an 
+\begin_inset Quotes eld
+\end_inset
+
+early
+\begin_inset Quotes erd
+\end_inset
+
+ trajectory correction in the sense that it keeps changing the direction
+ also during the MOVING FORWARD phase.
+ This ensures a smoother and faster trajectory with respect to the previous
+ one.
+ This type of trajectory is reached using two different PID acting simultaneousl
+y on the direction and on the orientation.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/improved_controller.png
+	width 30page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Example of trajectory of the turtlebot using the Improved Controller node.
+ The red circle is the robot.
+ The trajectory is very smooth and it's continuously corrected by the pid
+ acting on the angular velocity
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Improved Odometry
+\end_layout
+
+\begin_layout Standard
+This node implements the computation of different types of Odometry (Euler,
+ Runge-Kutta and Exact).
+ This node reads from the launch file the required odometry to use and publishes
+ it on the topic improved_odom.
+ The other parameter of this node is data_num that is the number of measurements
+ to average in order to get the current velocities.
+ If this number is large the averaged velocity will have the expected value
+ of the real velocity but the this node will be slow.
+ If data_num is low the averaged velocity could have more variance (due
+ to sensor noise) but the rate of this node will be very high.
+\end_layout
+
+\begin_layout Standard
+This node accumulates measurements in the odometry callback, it uses the
+ averaged linear and angular velocities to compute the new position using
+ the integration method specified in the launch file.
+\end_layout
+
+\begin_layout Section
+Installation Instruction
+\end_layout
+
+\begin_layout Subsection*
+Dependencies
+\end_layout
+
+\begin_layout Standard
+In order to run the simulation these packages are required: 
+\end_layout
+
+\begin_layout Itemize
+libncurses-5-dev: for terminal utility
+\end_layout
+
+\begin_layout Itemize
+ros-kinetic-pid: for the ros implementation of the PID controller
+\end_layout
+
+\begin_layout Itemize
+ros-kinetic-turtlebot-simulator and ros-kinetic-turtlebot-gazebo for the
+ turtlebot model and worlds.
+\end_layout
+
+\begin_layout Standard
+In order to install these packages run these commands:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo apt-get install libncurses5-dev
+\end_layout
+
+\begin_layout Plain Layout
+
+sudo apt-get install ros-kinetic-pid
+\end_layout
+
+\begin_layout Plain Layout
+
+sudo apt-get install ros-kinetic-turtlebot-gazebo 
+\end_layout
+
+\begin_layout Plain Layout
+
+sudo apt-get install ros-kinetic-turtlebot-simulator
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Compilation
+\end_layout
+
+\begin_layout Standard
+In order to compile the package copy it into the catkin workspace (here
+ is assumed as catkin_ws) inside the src folder.
+\end_layout
+
+\begin_layout Standard
+Then source the setup.bash file inside devel folder and the compile with
+ catkin.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+cd catkin_ws
+\end_layout
+
+\begin_layout Plain Layout
+
+source devel/setup.bash
+\end_layout
+
+\begin_layout Plain Layout
+
+catkin_make
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Run
+\end_layout
+
+\begin_layout Standard
+If everything is ok and nothing has failed run the simulation using:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+roslaunch ros_turtlebot_pilot pilot.launch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this way the simulation starts with the improved controller.
+ In order to start the simulation with the first version of the controller:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+roslaunch ros_turtlebot_pilot pilot_old.launch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Execution
+\end_layout
+
+\begin_layout Subsection*
+Parameter Settings
+\end_layout
+
+\begin_layout Standard
+In the launch file the following parameters can be changed:
+\end_layout
+
+\begin_layout Itemize
+Odometry used by the controller:
+\begin_inset listings
+lstparams "language=XML,basicstyle={\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<node name="improved_controller" pkg="ros_turtlebot_pilot" type="improved_contro
+ller" output="screen">
+\end_layout
+
+\begin_layout Plain Layout
+
+      <param name = "odom" value="improved_odom"/> <!--possible values:
+ odom, improved_odom"-->
+\end_layout
+
+\begin_layout Plain Layout
+
+ </node>
+\end_layout
+
+\end_inset
+
+Or for the first version of the controller:
+\begin_inset listings
+lstparams "language=XML,basicstyle={\ttfamily},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<node name="controller" pkg="ros_turtlebot_pilot" type="controller" output="scre
+en">
+\end_layout
+
+\begin_layout Plain Layout
+
+      	<param name = "odom" value="improved_odom"/> <!--possible values:
+ odom, improved_odom"-->
+\end_layout
+
+\begin_layout Plain Layout
+
+</node>
+\end_layout
+
+\end_inset
+
+The parameter 
+\begin_inset Quotes eld
+\end_inset
+
+odom
+\begin_inset Quotes erd
+\end_inset
+
+ can have values 
+\begin_inset Quotes eld
+\end_inset
+
+odom
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+improved_odom
+\begin_inset Quotes erd
+\end_inset
+
+ and the controller reads the odometry published in the specified topic.
+\end_layout
+
+\begin_layout Itemize
+Type of odometry used by the Improved odometry node:
+\begin_inset listings
+lstparams "language=XML,basicstyle={\ttfamily},breaklines=true,showstringspaces=false"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+<node name="improved_odometry" pkg="ros_turtlebot_pilot" type="improved_odometry
+" output="screen">
+\end_layout
+
+\begin_layout Plain Layout
+
+            <param name="odom_method" value="exact"/><!--possible values:
+ euler, runge-kutta, exact-->
+\end_layout
+
+\begin_layout Plain Layout
+
+            <param name="data_num" value="1"/> <!--number of data read that
+ are then averaged-->
+\end_layout
+
+\begin_layout Plain Layout
+
+</node>
+\end_layout
+
+\end_inset
+
+The odom_method represents the type of odometry and the possible values
+ are 
+\begin_inset Quotes eld
+\end_inset
+
+euler
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+runge-kutta
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+exact
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Autonomous Mode
+\end_layout
+
+\begin_layout Standard
+The turtlebot robot starts with autonomous mode.
+ In this mode the turtlebot reaches the goal provided in the topic 
+\begin_inset Quotes eld
+\end_inset
+
+/goal
+\begin_inset Quotes erd
+\end_inset
+
+ in an autonomous way.
+\end_layout
+
+\begin_layout Standard
+In order to give a goal (position) to the robot start the goal_reader node
+ with the following command:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rosrun ros_turlebot_pilot goal_reader
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Type a position following the instructions on the terminal and watch the
+ turtlebot reaching the goal.
+ During the movement it prints on the terminal its state and when the goal
+ is reached 
+\begin_inset Quotes eld
+\end_inset
+
+Goal is reached successfully
+\begin_inset Quotes erd
+\end_inset
+
+ will be printed on the terminal.
+ 
+\end_layout
+
+\begin_layout Standard
+It's possible to type another goal while the turtlebot is moving and the
+ robot changes goal dynamically.
+\end_layout
+
+\begin_layout Subsection*
+Pilot Mode
+\end_layout
+
+\begin_layout Standard
+In the pilot mode the pilot is driven by the keyboard.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to start the pilot mode start the joypad_simulator node with the
+ following command:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+rosrun ros_turtlebot_pilot joypad_simulator
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The button 
+\begin_inset Quotes eld
+\end_inset
+
+r
+\begin_inset Quotes erd
+\end_inset
+
+ switches the mode.
+ If the mode is autonomous is then changed to pilot.
+\end_layout
+
+\begin_layout Standard
+Now it's possible to drive the turtlebot using the arrows or the buttons.
+ Notice that if the mode changes from autonomous to pilot when the turtlebot
+ is trying to reach a goal, it will try to reach the goal when the mode
+ switches back to auto.
+\end_layout
+
+\begin_layout Section
+Reference
+\end_layout
+
+\begin_layout Itemize
+Project repository: https://github.com/EmilianoGagliardiEmanueleGhelfi/ros_turtle
+bot_pilot
+\end_layout
+
+\end_body
+\end_document
