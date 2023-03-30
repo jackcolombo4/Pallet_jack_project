@@ -1,7 +1,6 @@
 # pallet_jack_project
 Design of a robot that works as an mobile autonomous pallet_jack in gazebo and ros
 
-
 ## Prerequisites: 
 ROS kinetic, Gazebo and turtlebot3_teleop installed.
 
