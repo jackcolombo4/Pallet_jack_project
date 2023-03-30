@@ -1,5 +1,5 @@
-# gazebo_pallet_jack
-Design of an autonomous pallet jack using gazebo
+# pallet_jack_project
+Design of a robot that works as an mobile autonomous pallet_jack in gazebo and ros
 
 
 ## Prerequisites: 
@@ -17,80 +17,56 @@ Install the ros differential drive plugin:
 sudo apt-get install ros-kinetic-diff-drive-controller 
 ```
 
-To control the robot from the keyboard there's the need to install teleop-twist:
+Install teleop-twist to use keyboard to move the robot:
 ```
 sudo apt-get install ros-kinetic-teleop-twist-keyboard
 ```
 
-If apt does not find the package:
+Search for the proper package:
 ```
 apt-cache search ros-kinetic-teleop
 ```
 
-and find another package with a similar name.
-
 ### Compiling the plugin
-Move or link the gazebo_pallet_jack directoy into your catkin src directory
+Move the pallet_jack directoy into your catkin src directory
 move:
 ```
-mv /path_to_gazebo_pallet_jack /path_to_catkinws/src
+mv /path_to_pallet_jack /<path_to_catkinws>/src
 ```
 or link:
 ```
-ln -s  /path_to_gazebo_pallet_jack /path_to_catkinws/src
+ln -s  /path_to_pallet_jack /<path_to_catkinws>/src
 ```
 
 And compile:
 ```
-cd path_to_catkinws
+cd <path_to_catkinws>
 catkin_make
 
 ```
 
 ### Add the model to the Gazebo folder
-Add the directory to the model folder of gazebo, in this way gazebo can load the pallet_jack:
+Link the directory to the gazebo model folder:
 
 ```
 cd ~/.gazebo/models
 ln -s ~/path_to_model_folder
+ln -s ~/path_to_folder/my_box
 ```
-
-Add the directory of the box to the model folder of gazebo, in this way gazebo can load the box:
-
-```
-cd ~/.gazebo/models
-ln -s ~/path_to_folder/200k_box
-```
-
 ### Run
-
-#### Standard way
-
 To run:
 ```
-roslaunch gazebo_pallet_jack pallet.launch
+roslaunch pallet_jack pallet.launch
 ```
-
-If you want to see a little animation:
-```
-roslaunch gazebo_pallet_jack pallet_animation.launch
-```
-
-if the commands don't work try:
+or
 ```
 source /path_to_catkin_workspace/deved/setup.bash
+roslaunch pallet_jack pallet_animation.launch
 ```
-
-and execute the launch command again.
-
 #### Control the robot
-
 ```
 rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=pallet_jack/cmd_vel
 ```
-
-Where robot_0 must be substituted with the name of the robot.
-In this way teleop publishes on the right topic.
 
 ### Laser Scan 
 Laser Scan publish messages of type sensor_msgs/LaserScan.msg
@@ -102,9 +78,7 @@ Reference:
 
 ## Reference: 
 - http://wiki.ros.org/stdr_simulator/Tutorials/Teleop%20with%20teleop_twist_keyboard
-
 - http://www.theconstructsim.com/how-to-build-a-differential-drive-simulation/
-
 - http://answers.gazebosim.org/question/12366/clarification-on-moving-joint-with-model-plugin/
 
 ## Author

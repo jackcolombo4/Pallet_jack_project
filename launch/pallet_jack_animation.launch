@@ -1,6 +1,0 @@
-<launch>
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find gazebo_pallet_jack)/worlds/pallet_jack_world.world"/>
-  </include>
-  <node name="pallet_animation" pkg="gazebo_pallet_jack" type="pallet_animation" output="screen"/>
-</launch>
