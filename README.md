@@ -79,6 +79,3 @@ Reference:
 - http://wiki.ros.org/stdr_simulator/Tutorials/Teleop%20with%20teleop_twist_keyboard
 - http://www.theconstructsim.com/how-to-build-a-differential-drive-simulation/
 - http://answers.gazebosim.org/question/12366/clarification-on-moving-joint-with-model-plugin/
-
-## Author
-- Giacomo Colombo
